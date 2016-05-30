@@ -1,9 +1,10 @@
 defmodule ExBlocktrail do
   use HTTPoison.Base
 
-
   def latest_block(token) do
-    String.downcase(token) <> "/block/latest"
+    url = String.downcase(token) <> "/block/latest"
+    {:ok, response} = ExBlocktrail.get(url)
+    response.body
   end
 
   def process_url(url) do
@@ -11,7 +12,9 @@ defmodule ExBlocktrail do
     "https://api.blocktrail.com/v1/" <> url <> "?" <> URI.encode_query(%{api_key: key})
   end
 
-
-
+  def process_response_body(body) do
+    body
+    |> Poison.decode!
+  end
 
 end
