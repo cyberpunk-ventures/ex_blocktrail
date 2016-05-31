@@ -9,7 +9,7 @@ defmodule ExBlocktrail do
       do: {:ok, latest_block_data}
   end
 
-  def block_txs(block_hash, options) do
+  def block_txs(block_hash, options \\ []) do
     page = Keyword.get(options, :page, 0)
     url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page})
     with {:ok, response} <- ExBlocktrail.get(url),
@@ -18,7 +18,13 @@ defmodule ExBlocktrail do
   end
 
   def all_block_txs(block_hash) do
-
+    {:ok, paged_res} = block_txs(block_hash)
+    num_pages = div(paged_res.total, paged_res.per_page)
+    txs = [] ++ paged_res.data ++
+    Enum.map(1..num_pages, fn page_index ->
+      {:ok, paged_res} = block_txs(block_hash, page: page_index) #TODO: concurrent txs retrieval
+      paged_res.data
+    end)
   end
 
   def process_url(url) do
