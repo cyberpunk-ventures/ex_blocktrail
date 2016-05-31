@@ -1,10 +1,10 @@
-defmodule ExBlocktrail do
+defmodule BlocktrailCom do
   use HTTPoison.Base
 
 
   def latest_block(_) do
     url = "/btc/block/latest?"
-    with {:ok, response} <- ExBlocktrail.get(url),
+    with {:ok, response} <- BlocktrailCom.get(url),
           latest_block_data = BlockData.new(response.body),
       do: {:ok, latest_block_data}
   end
@@ -13,7 +13,7 @@ defmodule ExBlocktrail do
     page = Keyword.get(options, :page, 0)
     limit = Keyword.get(options, :limit, 200)
     url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page, limit: limit})
-    with {:ok, response} <- ExBlocktrail.get(url),
+    with {:ok, response} <- BlocktrailCom.get(url),
           # IO.inspect(response),
           paged_data = PagedResponse.new(response.body),
       do: {:ok, paged_data}
