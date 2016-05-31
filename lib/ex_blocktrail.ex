@@ -13,10 +13,12 @@ defmodule BlocktrailCom do
     page = Keyword.get(options, :page, 0)
     limit = Keyword.get(options, :limit, 200)
     url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page, limit: limit})
-    with {:ok, response} <- BlocktrailCom.get(url),
-          # IO.inspect(response),
-          paged_data = PagedResponse.new(response.body),
-      do: {:ok, paged_data}
+    {:ok, %HTTPoison.Response{status_code: 200, body: body}} = BlocktrailCom.get(url)
+    case body do
+      %{"code" => 401, "msg" => "Missing API key"} -> {:error, "Missing API key"}
+      _ -> {:ok, PagedResponse.new(body)}
+    end
+
   end
 
   def block_txs_all(block_hash) do
