@@ -7,4 +7,5 @@
   "mimerl": {:hex, :mimerl, "1.0.2", "993f9b0e084083405ed8252b99460c4f0563e41729ab42d9074fd5e52439be88", [:rebar3], []},
   "poison": {:hex, :poison, "2.1.0", "f583218ced822675e484648fa26c933d621373f01c6c76bd00005d7bd4b82e27", [:mix], []},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.0", "edee20847c42e379bf91261db474ffbe373f8acb56e9079acb6038d4e0bf414f", [:rebar, :make], []},
-  "vex": {:hex, :vex, "0.5.5", "d1c79c1cfba39d400df16c1653a81f1ea7d485a9983dd1a54568e35eafad17fa", [:mix], []}}
+  "vex": {:hex, :vex, "0.5.5", "d1c79c1cfba39d400df16c1653a81f1ea7d485a9983dd1a54568e35eafad17fa", [:mix], []},
+  "yuri": {:hex, :yuri, "1.0.0", "b3335c073ca1f705cf4becb14d01272fe34ac9166ed36e2ae37dbfa8ab9255ad", [:mix], []}}
