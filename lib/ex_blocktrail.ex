@@ -3,8 +3,8 @@ defmodule ExBlocktrail do
 
   def latest_block(token) do
     url = String.downcase(token) <> "/block/latest"
-    {:ok, response} = ExBlocktrail.get(url)
-    response.body
+    with {:ok, response} <- ExBlocktrail.get(url),
+      do: {:ok, response.body}
   end
 
   def process_url(url) do
