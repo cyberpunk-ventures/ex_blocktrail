@@ -28,3 +28,6 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :ex_blocktrail,
+  api_key: System.get_env("BLOCKTRAIL_API_KEY")

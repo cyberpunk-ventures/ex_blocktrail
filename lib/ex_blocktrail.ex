@@ -10,7 +10,8 @@ defmodule ExBlocktrail do
   end
 
   def block_txs(block_hash, options) do
-    url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: options.page})
+    page = Keyword.get(options, :page, 0)
+    url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page})
     with {:ok, response} <- ExBlocktrail.get(url),
           paged_data = PagedResponse.new(response.body),
       do: {:ok, paged_data}
