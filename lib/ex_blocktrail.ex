@@ -4,7 +4,8 @@ defmodule ExBlocktrail do
   def latest_block(token) do
     url = String.downcase(token) <> "/block/latest"
     with {:ok, response} <- ExBlocktrail.get(url),
-      do: {:ok, response.body}
+          latest_block_data = BlockData.new(response.body),
+      do: {:ok, latest_block_data}
   end
 
   def process_url(url) do
@@ -16,5 +17,29 @@ defmodule ExBlocktrail do
     body
     |> Poison.decode!
   end
+
+end
+
+defmodule BlockData do
+  defstruct [
+    hash: "",
+    height: "",
+    block_time: "",
+    difficulty: "",
+    merkleroot: "",
+    prev_block: "",
+    next_block: "",
+    byte_size: "",
+    confirmations: 0,
+    transactions: "",
+    value: "",
+    miningpool_name: "",
+    miningpool_url: "",
+    miningpool_slug: "" ]
+
+    use ExConstructor
+    use Vex.Struct
+
+    validates :hash, presence: true
 
 end
