@@ -11,20 +11,29 @@ defmodule ExBlocktrail do
 
   def block_txs(block_hash, options \\ []) do
     page = Keyword.get(options, :page, 0)
-    url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page})
+    limit = Keyword.get(options, :limit, 200)
+    url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page, limit: limit})
     with {:ok, response} <- ExBlocktrail.get(url),
+          # IO.inspect(response),
           paged_data = PagedResponse.new(response.body),
       do: {:ok, paged_data}
   end
 
-  def all_block_txs(block_hash) do
+  def block_txs_all(block_hash) do
     {:ok, paged_res} = block_txs(block_hash)
-    num_pages = div(paged_res.total, paged_res.per_page)
-    txs = [] ++ paged_res.data ++
-    Enum.map(1..num_pages, fn page_index ->
-      {:ok, paged_res} = block_txs(block_hash, page: page_index) #TODO: concurrent txs retrieval
-      paged_res.data
-    end)
+    hd_page_tx_num = length(paged_res.data)
+    txs = cond do
+      hd_page_tx_num >= paged_res.total -> paged_res.data
+      hd_page_tx_num < paged_res.total ->
+        num_pages = div(paged_res.total, paged_res.per_page) + 1
+        next_page = paged_res.current_page + 1
+        paged_res.data ++ Enum.flat_map(next_page..num_pages, fn page_index ->
+          {:ok, paged_res} = block_txs(block_hash, page: page_index) #TODO: concurrent txs retrieval
+          paged_res.data
+        end)
+    end
+
+    {:ok, txs}
   end
 
   def process_url(url) do
