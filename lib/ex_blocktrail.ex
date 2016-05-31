@@ -1,7 +1,7 @@
 defmodule BlocktrailCom do
   use HTTPoison.Base
 
-
+  @spec latest_block(String.t()) :: BlockData.t()
   def latest_block(_) do
     url = "/btc/block/latest?"
     with {:ok, response} <- BlocktrailCom.get(url),
@@ -76,7 +76,6 @@ defmodule BlockData do
     use Vex.Struct
 
     validates :hash, presence: true
-
 end
 
 
