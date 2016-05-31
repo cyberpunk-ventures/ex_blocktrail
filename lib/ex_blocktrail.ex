@@ -60,3 +60,15 @@ defmodule BlockData do
     validates :hash, presence: true
 
 end
+
+
+defmodule PagedResponse do
+  defstruct [
+    current_page: 0,
+    per_page: 0,
+    total: 0,
+    data: %{}]
+
+  use ExConstructor
+  use Vex.Struct
+end
