@@ -1,7 +1,7 @@
 defmodule BlocktrailCom do
   use HTTPoison.Base
 
-  @spec latest_block(String.t()) :: BlockData.t()
+  @spec latest_block(String.t) :: BlockData.t
   def latest_block(_) do
     url = "/btc/block/latest?"
     with {:ok, response} <- BlocktrailCom.get(url),
@@ -9,7 +9,7 @@ defmodule BlocktrailCom do
       do: {:ok, latest_block_data}
   end
 
-  @spec block_txs(String.t()) :: { atom, PagedResponse.t()}
+  @spec block_txs(String.t) :: { atom, PagedResponse.t}
   def block_txs(block_hash, options \\ []) do
     page = Keyword.get(options, :page, 0)
     limit = Keyword.get(options, :limit, 200)
@@ -21,7 +21,7 @@ defmodule BlocktrailCom do
     end
   end
 
-  @spec block_txs_all(String.t()) :: [BlockData.t()]
+  @spec block_txs_all(String.t) :: [BlockData.t]
   def block_txs_all(block_hash) do
     {:ok, paged_res} = block_txs(block_hash)
     hd_page_tx_num = length(paged_res.data)
