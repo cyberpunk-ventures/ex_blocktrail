@@ -6,8 +6,8 @@ defmodule BlocktrailCom do
   def latest_block(_) do
     url = "/btc/block/latest?"
     with {:ok, response} <- BlocktrailCom.get(url),
-          latest_block_data = BlockData.new(response.body),
-      do: {:ok, latest_block_data}
+    latest_block_data = BlockData.new(response.body),
+    do: {:ok, latest_block_data}
   end
 
   @spec block_txs(String.t) :: { atom, PagedResponse.t}
@@ -25,20 +25,19 @@ defmodule BlocktrailCom do
   @spec block_txs_all(String.t) :: [BlockData.t]
   def block_txs_all(block_hash) do
     {:ok, paged_res} = block_txs(block_hash)
-    hd_page_tx_num = length(paged_res.data)
-    txs = cond do
-      hd_page_tx_num >= paged_res.total -> paged_res.data
-      hd_page_tx_num < paged_res.total ->
-        num_pages = div(paged_res.total, paged_res.per_page) + 1
-        next_page = paged_res.current_page + 1
-        paged_res.data ++ Enum.flat_map(next_page..num_pages, fn page_index ->
-          {:ok, paged_res} = block_txs(block_hash, page: page_index) #TODO: concurrent txs retrieval
-          paged_res.data
-        end)
+    txs = if length(paged_res.data) >= paged_res.total do
+      paged_res.data
+    else
+      num_pages = div(paged_res.total, paged_res.per_page) + 1
+      paged_res.data ++ Enum.flat_map(2..num_pages, fn page_index ->
+        {:ok, paged_res} = block_txs(block_hash, page: page_index) #TODO: concurrent txs retrieval
+        paged_res.data
+      end)
     end
 
     {:ok, txs}
   end
+
 
   def process_url(url) do
     key = Application.get_env(:ex_blocktrail, :api_key)
@@ -60,20 +59,20 @@ end
 defmodule BlocktrailCom.BlockData do
   @moduledoc """
   defstruct [
-    hash: "",
-    height: "",
-    block_time: "",
-    difficulty: "",
-    merkleroot: "",
-    prev_block: "",
-    next_block: "",
-    byte_size: "",
-    confirmations: 0,
-    transactions: "",
-    value: "",
-    miningpool_name: "",
-    miningpool_url: "",
-    miningpool_slug: "" ]
+  hash: "",
+  height: "",
+  block_time: "",
+  difficulty: "",
+  merkleroot: "",
+  prev_block: "",
+  next_block: "",
+  byte_size: "",
+  confirmations: 0,
+  transactions: "",
+  value: "",
+  miningpool_name: "",
+  miningpool_url: "",
+  miningpool_slug: "" ]
 
   """
   defstruct [
@@ -96,23 +95,23 @@ defmodule BlocktrailCom.BlockData do
     use Vex.Struct
 
     validates :hash, presence: true
-end
+  end
 
 
-defmodule BlocktrailCom.PagedResponse do
-  @moduledoc """
-  defstruct [
+  defmodule BlocktrailCom.PagedResponse do
+    @moduledoc """
+    defstruct [
     current_page: 0,
     per_page: 0,
     total: 0,
     data: %{}]
-  """
-  defstruct [
-    current_page: 0,
-    per_page: 0,
-    total: 0,
-    data: %{}]
+    """
+    defstruct [
+      current_page: 0,
+      per_page: 0,
+      total: 0,
+      data: %{}]
 
-  use ExConstructor
-  use Vex.Struct
-end
+      use ExConstructor
+      use Vex.Struct
+    end
