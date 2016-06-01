@@ -50,9 +50,8 @@ defmodule BlocktrailCom do
   def process_response_body(body) do
     body = body
     |> Poison.decode!
-
     case body do
-      %{"code" => 401, "msg" => "Missing API key"} -> {:error, "Missing API key"}
+      %{"code" => 401, "msg" => "Missing API key"} -> throw("Missing API key")
       _ -> body
     end
   end
