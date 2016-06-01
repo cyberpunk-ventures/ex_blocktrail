@@ -6,7 +6,7 @@ defmodule BlocktrailCom do
   def latest_block(_) do
     url = "/btc/block/latest?"
     with {:ok, response} <- BlocktrailCom.get(url),
-    latest_block_data = BlockData.new(response.body),
+      latest_block_data = BlockData.new(response.body),
     do: {:ok, latest_block_data}
   end
 
@@ -16,11 +16,9 @@ defmodule BlocktrailCom do
     limit = Keyword.get(options, :limit, 200)
     url = "/btc/block/#{block_hash}/transactions?" <> URI.encode_query(%{page: page, limit: limit})
     {:ok, %HTTPoison.Response{status_code: 200, body: body}} = BlocktrailCom.get(url)
-    case body do
-      %{"code" => 401, "msg" => "Missing API key"} -> {:error, "Missing API key"}
-      _ -> {:ok, PagedResponse.new(body)}
-    end
+    {:ok, PagedResponse.new(body)}
   end
+
 
   @spec block_txs_all(String.t) :: [BlockData.t]
   def block_txs_all(block_hash) do
@@ -50,8 +48,13 @@ defmodule BlocktrailCom do
   end
 
   def process_response_body(body) do
-    body
+    body = body
     |> Poison.decode!
+
+    case body do
+      %{"code" => 401, "msg" => "Missing API key"} -> {:error, "Missing API key"}
+      _ -> body
+    end
   end
 
 end
@@ -76,25 +79,25 @@ defmodule BlocktrailCom.BlockData do
 
   """
   defstruct [
-    hash: "",
-    height: "",
-    block_time: "",
-    difficulty: "",
-    merkleroot: "",
-    prev_block: "",
-    next_block: "",
-    byte_size: "",
+    hash: nil,
+    height: nil,
+    block_time: nil,
+    difficulty: nil,
+    merkleroot: nil,
+    prev_block: nil,
+    next_block: nil,
+    byte_size: nil,
     confirmations: 0,
-    transactions: "",
-    value: "",
-    miningpool_name: "",
-    miningpool_url: "",
-    miningpool_slug: "" ]
+    transactions: nil,
+    value: nil,
+    miningpool_name: nil,
+    miningpool_url: nil,
+    miningpool_slug: nil ]
 
     use ExConstructor
     use Vex.Struct
 
-    validates :hash, presence: true
+    validates :hash, [length: 64, presence: true]
   end
 
 
