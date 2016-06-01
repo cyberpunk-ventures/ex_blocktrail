@@ -9,6 +9,7 @@ defmodule BlocktrailCom do
       do: {:ok, latest_block_data}
   end
 
+  @spec latest_block(String.t()) :: { atom, PagedResponse.t()}
   def block_txs(block_hash, options \\ []) do
     page = Keyword.get(options, :page, 0)
     limit = Keyword.get(options, :limit, 200)
@@ -18,9 +19,9 @@ defmodule BlocktrailCom do
       %{"code" => 401, "msg" => "Missing API key"} -> {:error, "Missing API key"}
       _ -> {:ok, PagedResponse.new(body)}
     end
-
   end
 
+  @spec block_txs_all(String.t()) :: [BlockData.t()]
   def block_txs_all(block_hash) do
     {:ok, paged_res} = block_txs(block_hash)
     hd_page_tx_num = length(paged_res.data)
@@ -56,6 +57,24 @@ defmodule BlocktrailCom do
 end
 
 defmodule BlockData do
+  @moduledoc """
+  defstruct [
+    hash: "",
+    height: "",
+    block_time: "",
+    difficulty: "",
+    merkleroot: "",
+    prev_block: "",
+    next_block: "",
+    byte_size: "",
+    confirmations: 0,
+    transactions: "",
+    value: "",
+    miningpool_name: "",
+    miningpool_url: "",
+    miningpool_slug: "" ]
+
+  """
   defstruct [
     hash: "",
     height: "",
@@ -80,6 +99,13 @@ end
 
 
 defmodule PagedResponse do
+  @moduledoc """
+  defstruct [
+    current_page: 0,
+    per_page: 0,
+    total: 0,
+    data: %{}]
+  """
   defstruct [
     current_page: 0,
     per_page: 0,
