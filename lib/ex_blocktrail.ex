@@ -1,5 +1,6 @@
 defmodule BlocktrailCom do
   use HTTPoison.Base
+  alias BlocktrailCom.{BlockData, PagedResponse}
 
   @spec latest_block(String.t) :: BlockData.t
   def latest_block(_) do
@@ -56,7 +57,7 @@ defmodule BlocktrailCom do
 
 end
 
-defmodule BlockData do
+defmodule BlocktrailCom.BlockData do
   @moduledoc """
   defstruct [
     hash: "",
@@ -98,7 +99,7 @@ defmodule BlockData do
 end
 
 
-defmodule PagedResponse do
+defmodule BlocktrailCom.PagedResponse do
   @moduledoc """
   defstruct [
     current_page: 0,
