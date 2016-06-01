@@ -1,6 +1,6 @@
 # ExBlocktrail
 
-**TODO: Add description**
+WIP. Alpha. Elixir wrapper for blocktrail.com Bitcoin api and some utility functions.
 
 ## Installation
 
@@ -17,4 +17,3 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
         def application do
           [applications: [:ex_blocktrail]]
         end
-
