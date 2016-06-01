@@ -9,7 +9,7 @@ defmodule BlocktrailCom do
       do: {:ok, latest_block_data}
   end
 
-  @spec latest_block(String.t()) :: { atom, PagedResponse.t()}
+  @spec block_txs(String.t()) :: { atom, PagedResponse.t()}
   def block_txs(block_hash, options \\ []) do
     page = Keyword.get(options, :page, 0)
     limit = Keyword.get(options, :limit, 200)
