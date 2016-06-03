@@ -41,6 +41,22 @@ defmodule BlocktrailCom do
     {:ok, txs}
   end
 
+  def all_blocks, do: all_blocks([])
+  def all_blocks(options) do
+    q_map = options
+    |> Enum.drop_while(fn {_,v} -> is_nil(v) end)
+    |> Enum.into(%{})
+    |> Map.put_new(:limit, 200)
+
+    url = "/btc/all-blocks?" <> URI.encode_query(q_map)
+    {:ok, %HTTPoison.Response{status_code: 200, body: body}} = BlocktrailCom.get(url)
+    {:ok, PagedResponse.new(body)}
+  end
+
+
+  def traverse_paged_response do
+    #TODO extract traversal and folding of PagedResponse from block_tx_all
+  end
 
   def process_url(url) do
     key = Application.get_env(:ex_blocktrail, :api_key)
@@ -114,10 +130,10 @@ defmodule BlocktrailCom.BlockData do
     data: %{}]
     """
     defstruct [
-      current_page: 0,
-      per_page: 0,
-      total: 0,
-      data: %{}]
+      current_page: nil,
+      per_page: nil,
+      total: nil,
+      data: nil]
 
       use ExConstructor
       use Vex.Struct

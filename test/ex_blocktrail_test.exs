@@ -21,4 +21,9 @@ defmodule BlocktrailComTest do
     {:ok, txs} = BlocktrailCom.block_txs_all("00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45")
     assert length(txs) == 779
   end
+
+  test "get all_blocks" do
+     {:ok, paged_resp} = BlocktrailCom.all_blocks()
+     assert length(paged_resp.data) == 200
+  end
 end
