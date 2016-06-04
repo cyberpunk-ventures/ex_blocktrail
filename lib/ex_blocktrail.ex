@@ -41,8 +41,7 @@ defmodule BlocktrailCom do
     {:ok, txs}
   end
 
-  def all_blocks, do: all_blocks([])
-  def all_blocks(options) do
+  def all_blocks(options \\ []) do
     q_map = options
     |> Enum.drop_while(fn {_,v} -> is_nil(v) end)
     |> Enum.into(%{})
@@ -54,7 +53,7 @@ defmodule BlocktrailCom do
   end
 
 
-  def traverse_paged_response do
+  def reduce_paged_response do
     #TODO extract traversal and folding of PagedResponse from block_tx_all
   end
 
