@@ -41,6 +41,9 @@ defmodule BlocktrailCom do
     {:ok, txs}
   end
 
+  @doc """
+  Possible arguments for options are [sort_dir: "asc" | "desc", limit: 0-200, page: 0..n]
+  """
   def all_blocks(options \\ []) do
     q_map = options
     |> Enum.drop_while(fn {_,v} -> is_nil(v) end)
