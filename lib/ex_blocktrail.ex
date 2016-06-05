@@ -43,6 +43,8 @@ defmodule BlocktrailCom do
 
   @doc """
   Possible arguments for options are [sort_dir: "asc" | "desc", limit: 0-200, page: 0..n]
+
+  Return value is success tuple with PagedResponse.t, where data is [BlockData.t]
   """
   def all_blocks(options \\ []) do
     q_map = options
@@ -52,7 +54,10 @@ defmodule BlocktrailCom do
 
     url = "/btc/all-blocks?" <> URI.encode_query(q_map)
     {:ok, %HTTPoison.Response{status_code: 200, body: body}} = BlocktrailCom.get(url)
-    {:ok, PagedResponse.new(body)}
+    paged_resp = body
+    |> PagedResponse.new
+    |> Map.update!(:data, fn xs -> Enum.map(xs,  &BlocktrailCom.BlockData.new/1) end)
+    {:ok, paged_resp}
   end
 
 
