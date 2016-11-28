@@ -23,7 +23,8 @@ defmodule BlocktrailComTest do
   end
 
   test "get all_blocks" do
-     {:ok, paged_resp} = BlocktrailCom.all_blocks()
+     {:ok, paged_resp} = BlocktrailCom.all_blocks(sort_dir: "asc", page: 0, limit: 200)
+     IO.inspect(paged_resp)
      assert length(paged_resp.data) == 200
   end
 end

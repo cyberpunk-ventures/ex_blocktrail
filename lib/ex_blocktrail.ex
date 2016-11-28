@@ -55,8 +55,8 @@ defmodule BlocktrailCom do
     url = "/btc/all-blocks?" <> URI.encode_query(q_map)
     {:ok, %HTTPoison.Response{status_code: 200, body: body}} = BlocktrailCom.get(url)
     paged_resp = body
-    |> PagedResponse.new
-    |> Map.update!(:data, fn xs -> Enum.map(xs,  &BlocktrailCom.BlockData.new/1) end)
+      |> PagedResponse.new
+      |> Map.update!(:data, fn xs -> Enum.map(xs,  &BlocktrailCom.BlockData.new/1) end)
     {:ok, paged_resp}
   end
 
@@ -77,7 +77,7 @@ defmodule BlocktrailCom do
 
   def process_response_body(body) do
     body = body
-    |> Poison.decode!
+      |> Poison.decode!
     case body do
       %{"code" => 401, "msg" => "Missing API key"} -> throw("Missing API key")
       _ -> body
