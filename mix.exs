@@ -48,7 +48,7 @@ defmodule BlocktrailCom.Mixfile do
   end
 
   defp description do
-   "WIP. Alpha. Elixir wrapper for blocktrail.com Bitcoin api and some utility functions."
+   "WIP. Elixir wrapper for blocktrail.com Bitcoin api and some utility functions."
   end
 end
 
